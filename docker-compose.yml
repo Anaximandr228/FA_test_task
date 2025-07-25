@@ -1,0 +1,37 @@
+services:
+  web:
+    restart: always
+    build: .
+    links:
+      - postgres:postgres
+
+    environment:
+      DEBUG: False
+      POSTGRES_HOST: "postgres"
+      POSTGRES_DB: "fa_db"  #Введите название базы данных postgres
+      DATABASE_PORT: "5432"
+      POSTGRES_USER: "postgres"  #Введите название пользователя базы данных
+      POSTGRES_PASSWORD: "rtf558Ur" #Введите пароль пользователя базы данных
+    ports:
+      - "8000:8000"
+    depends_on:
+      - postgres
+    command: >
+      sh -c "python app/routers.py"
+      
+
+  postgres:
+    hostname: postgres
+    restart: always
+    image: postgres:latest
+    volumes:
+      - db-data:/var/lib/postgresql
+    environment:
+      POSTGRES_DB: "fa_db"  #Введите название базы данных postgres
+      POSTGRES_USER: "postgres"  #Введите название пользователя базы данных
+      POSTGRES_PASSWORD: "rtf558Ur" #Введите пароль пользователя базы данных
+    ports:
+      - "5432:5432"
+
+volumes:
+  db-data:
