@@ -22,7 +22,6 @@ class TaskBase(BaseModel):
     title: str
     description: Optional[str] = None
     status: str = 'pending'
-    owner_id: int
 
 
 class TaskCreate(TaskBase):
