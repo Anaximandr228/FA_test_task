@@ -23,6 +23,7 @@ task_status_enum = PgEnum(
 )
 
 
+# Создание модели для таблицы User
 class User(Base):
     __tablename__ = "users"
     __table_args__ = {'extend_existing': True}  # Разрешаем переопределение
@@ -34,6 +35,7 @@ class User(Base):
     tasks = relationship("Task", back_populates="owner")
 
 
+# Создание модели для таблицы Task
 class Task(Base):
     __tablename__ = "tasks"
     __table_args__ = {'extend_existing': True}  # Разрешаем переопределение

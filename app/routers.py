@@ -3,7 +3,7 @@ import uvicorn
 from fastapi import FastAPI, HTTPException, Depends, status
 from sqlalchemy.orm import Session
 from app import models, crud
-from app.shemas import UserCreate, TaskCreate, TaskUpdate, Task as TaskSchema
+from app.sсhemas import UserCreate, TaskCreate, TaskUpdate, Task as TaskSchema
 from app.database import engine, SessionLocal
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
 
@@ -12,9 +12,7 @@ models.Base.metadata.create_all(bind=engine)
 
 security = HTTPBasic()
 app = FastAPI(
-    title="Task Manager API",
-    description="Simple REST API for task management with authentication",
-    version="1.0.0"
+    title="Task Manager API"
 )
 
 
@@ -34,7 +32,7 @@ def get_current_user_id(
     if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Incorrect username or password",
+            detail="Неправильный логин или пароль",
             headers={"WWW-Authenticate": "Basic"},
         )
 
@@ -42,7 +40,7 @@ def get_current_user_id(
     if not crud.verify_password(credentials.password, user.PASSWORD):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Incorrect username or password",
+            detail="Неправильный логин или пароль",
             headers={"WWW-Authenticate": "Basic"},
         )
 
@@ -57,11 +55,11 @@ def register_user(
 ):
     db_user = crud.get_user_by_username(db, username=user.username)
     if db_user:
-        raise HTTPException(status_code=400, detail="Username already registered")
+        raise HTTPException(status_code=400, detail="Данное имя пользователя уже занято")
     return crud.create_user(db=db, user=user)
 
 
-# Операции с задачами
+# Создание  задачи
 @app.post("/tasks/", response_model=TaskSchema)
 def create_task(
         task: TaskCreate,
@@ -71,6 +69,7 @@ def create_task(
     return crud.create_task(db, task.dict(), user_id)
 
 
+# Получение списка задач
 @app.get("/tasks/", response_model=List[TaskSchema])
 def read_tasks(
         status: Optional[str] = None,
@@ -82,6 +81,7 @@ def read_tasks(
     return crud.get_tasks(db, user_id, status=status, skip=skip, limit=limit)
 
 
+# Обновление задачи
 @app.put("/tasks/{task_id}", response_model=TaskSchema)
 def update_task(
         task_id: int,
@@ -95,6 +95,7 @@ def update_task(
     return crud.update_task(db, db_task, task.dict(exclude_unset=True))
 
 
+# Удаление задачи
 @app.delete("/tasks/{task_id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_task(
         task_id: int,
