@@ -37,7 +37,7 @@ def get_current_user_id(
         )
 
     # Используем новую функцию проверки пароля
-    if not crud.verify_password(credentials.password, user.PASSWORD):
+    if not crud.verify_password(credentials.password, user.password):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Неправильный логин или пароль",
