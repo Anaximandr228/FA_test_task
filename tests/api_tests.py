@@ -6,15 +6,15 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, Session
 from starlette.testclient import TestClient
 from app import models
-from app.config import user, password, host
+from app.config import USER, PASSWORD, HOST
 from app.fa_app import app, get_db
 
-SQLALCHEMY_DATABASE_URL = f'postgresql://{user}:{password}@{host}/test'
+SQLALCHEMY_DATABASE_URL = f'postgresql://{USER}:{PASSWORD}@{HOST}/test'
 
 
 @pytest.fixture(scope="session")
 def connection():
-    con = psycopg2.connect(dbname='postgres', user=user, host=host, password=password)
+    con = psycopg2.connect(dbname='postgres', user=USER, host=HOST, password=PASSWORD)
     con.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
     cur = con.cursor()
     cur.execute('DROP DATABASE IF EXISTS test')
